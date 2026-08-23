@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>冀教版小学英语闪卡</title>
+<style>
+:root{
+  --bg1:#0f1b2d; --bg2:#1b2f4e;
+  --card:#fdf6ec; --card-edge:#e8dcc8;
+  --ink:#24344d; --sub:#6b7a92;
+  --acc:#ff7a3d; --acc-deep:#e85d1f;
+  --gold:#d9a441;
+  --ok:#2ecc71;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{max-width:100%;overflow-x:hidden;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif;
+  background:radial-gradient(120% 90% at 15% 0%,var(--bg2) 0%,var(--bg1) 55%,#0a1522 100%);
+  min-height:100vh;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;
+  padding:env(safe-area-inset-top) 12px calc(env(safe-area-inset-bottom) + 12px);
+}
+.wrap{width:100%;max-width:520px;display:flex;flex-direction:column;flex:1;}
+
+/* ---------- 头部 ---------- */
+header{text-align:center;padding:14px 0 10px;}
+header h1{
+  font-size:19px;font-weight:800;letter-spacing:1px;color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+header h1 .dot{color:var(--acc);}
+header p{font-size:12px;color:#9fb2cc;margin-top:4px;}
+
+/* ---------- 工具条 ---------- */
+.toolbar{display:flex;gap:8px;align-items:center;margin:10px 0 8px;flex-wrap:nowrap;}
+.btn{
+  border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:600;
+  background:rgba(255,255,255,.08);color:#dfe9f5;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  transition:transform .12s,background .15s;
+}
+.btn:active{transform:scale(.94);}
+.btn.on{background:var(--acc);color:#fff;}
+.spacer{flex:1;}
+.icon-btn{width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:17px;}
+
+/* 分类 chips 横向滚动 */
+.chips{
+  display:flex;gap:8px;overflow-x:auto;padding:6px 2px 8px;margin:0 -2px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:0 0 auto;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);
+  color:#c8d6e8;border-radius:999px;padding:7px 13px;font-size:12.5px;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700;}
+
+/* ---------- 卡片 ---------- */
+.stage{display:flex;justify-content:center;perspective:1400px;margin:8px 0 4px;}
+.card-scene{position:relative;width:100%;max-width:460px;height:min(52vh,430px);min-height:300px;transform-style:preserve-3d;}
+.card{
+  position:absolute;inset:0;border-radius:26px;cursor:pointer;
+  transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 18px 45px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.card.flip{transform:rotateY(180deg);}
+.face{
+  position:absolute;inset:0;border-radius:26px;padding:22px;
+  display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#fffdf7 0%,var(--card) 55%,#f3e8d2 100%);
+  border:1px solid var(--card-edge);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.face.back{transform:rotateY(180deg);background:linear-gradient(165deg,#fffaf0 0%,#fdf0da 60%,#f7e3c4 100%);}
+
+.face .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tag{
+  font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;
+  background:rgba(26,74,135,.09);color:#3a5a86;letter-spacing:.3px;
+}
+.tag.acc{background:rgba(255,122,61,.14);color:var(--acc-deep);}
+
+.face .main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:hidden;}
+.card-img{
+  flex:none;width:min(62%,240px);aspect-ratio:1/1;margin:2px auto 12px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:18px;background:linear-gradient(160deg,#fff 0%,#f1e7d3 100%);
+  border:1px solid rgba(217,164,65,.35);overflow:hidden;
+}
+.card-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(1.3);
+  transform-origin:center;
+}
+.card-img.hide{display:none;}
+.watermark{
+  text-align:center;font-size:8.5px;line-height:1.5;letter-spacing:.5px;
+  color:rgba(90,70,35,.20);margin:2px 0 6px;user-select:none;
+}
+.watermark.hide{display:none;}
+.face .l3en,.face .l3zh{font-weight:800;word-break:break-word;line-height:1.3;}
+.face .l3en{font-size:clamp(24px,6vw,34px);color:var(--ink);}
+.face .l3zh{font-size:clamp(30px,7.5vw,44px);color:var(--ink);}
+.face .hint{font-size:12px;color:var(--sub);margin-top:12px;}
+
+.path{
+  margin-top:auto;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.65);
+  border:1px dashed rgba(217,164,65,.55);text-align:center;
+}
+.path .pl{font-size:12px;color:var(--sub);margin-bottom:4px;letter-spacing:1px;}
+.path .pv{font-size:15px;font-weight:700;color:#5a4a20;line-height:1.5;word-break:break-word;}
+.path .pv .arrow{color:var(--gold);margin:0 5px;font-weight:900;}
+
+.face:not(.back) .path{display:none;}
+.speaker{
+  position:absolute;bottom:14px;right:14px;z-index:5;
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--acc);color:#fff;font-size:19px;
+  box-shadow:0 6px 16px rgba(232,93,31,.45);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s;
+}
+.speaker:active{transform:scale(.9);}
+.speaker.speaking{animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,122,61,.55);}50%{box-shadow:0 0 0 14px rgba(255,122,61,0);}}
+
+.corner{
+  position:absolute;top:14px;left:16px;font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:.5px;
+}
+
+/* ---------- 进度 ---------- */
+.progress{margin:14px 0 4px;}
+.progress .pbar{height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;}
+.progress .pfill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .25s;width:0;}
+.progress .ptext{display:flex;justify-content:space-between;font-size:11.5px;color:#9fb2cc;margin-top:6px;}
+
+/* ---------- 底部操作 ---------- */
+.controls{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.ctrl-btn{
+  flex:1;border:none;border-radius:16px;padding:14px 0;font-size:15px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.1);color:#eaf1fa;transition:transform .12s,background .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.ctrl-btn:active{transform:scale(.95);}
+.ctrl-btn.primary{background:linear-gradient(135deg,var(--acc) 0%,var(--acc-deep) 100%);box-shadow:0 8px 20px rgba(232,93,31,.35);}
+.ctrl-btn.small{flex:0 0 auto;width:52px;border-radius:16px;}
+#langBtn{font-size:12px;font-weight:800;letter-spacing:.5px;}
+
+/* ---------- 提示条 ---------- */
+.toast{
+  position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);
+  background:rgba(20,32,52,.95);color:#fff;padding:10px 18px;border-radius:12px;
+  font-size:13px;opacity:0;pointer-events:none;transition:all .3s;z-index:99;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:86%;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+footer{text-align:center;font-size:11px;color:#5f7290;margin-top:14px;letter-spacing:.5px;}
+.tts-banner{
+  display:flex;align-items:flex-start;gap:8px;margin:8px 0 4px;padding:10px 12px;
+  background:linear-gradient(135deg,#fff7e6 0%,#ffefd2 100%);
+  border:1px solid rgba(217,164,65,.5);border-radius:12px;
+  font-size:12.5px;line-height:1.6;color:#6b5310;
+}
+.tts-banner.hide{display:none;}
+.tts-banner b{color:#a05a00;}
+.tts-banner .x{margin-left:auto;flex:none;background:none;border:none;font-size:14px;color:#a08a55;cursor:pointer;padding:0 2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>冀教版小学英语<span class="dot">闪卡</span></h1>
+    <p id="statLine">三年级起点 · 3-6 年级 · 716 个单词</p>
+  </header>
+
+  <div class="tts-banner hide" id="ttsBanner">
+    <div>📢 当前浏览器<span style="color:#c0392b">不支持朗读</span>。<br>请在页面右上角点 <b>「···」→「在浏览器中打开」</b>，或用 <b>Safari / Chrome</b> 打开本链接，即可获得英式发音朗读；<b>添加到主屏幕</b>后从图标进入效果最佳。<br>（微信内置浏览器会屏蔽朗读功能）</div>
+    <button class="x" id="ttsClose">✕</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="modeBtn" title="切换卡片朝向">EN → 中</button>
+    <button class="btn" id="orderBtn" title="切换顺序/随机">顺序</button>
+    <div class="spacer"></div>
+    <button class="btn icon-btn" id="autoBtn" title="自动播放">▶</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="stage">
+    <div class="card-scene" id="scene">
+      <div class="card" id="card">
+        <div class="face">
+          <span class="corner" id="cornerFront"></span>
+          <div class="tag-row" id="tagsFront"></div>
+          <div class="main">
+            <div class="card-img hide" id="frontImgWrap"><img id="frontImg" alt="" referrerpolicy="no-referrer"></div>
+            <div class="l3en" id="frontText"></div><div class="hint" id="frontHint">点击卡片翻面看中文 · 点 🔊 英音朗读</div>
+          </div>
+          <div class="path"><div class="pl" id="frontPathLabel">所属路径</div><div class="pv" id="frontPath"></div></div>
+        </div>
+        <div class="face back">
+          <span class="corner">答案</span>
+          <div class="tag-row" id="tagsBack"></div>
+          <div class="main"><div class="l3zh" id="backText"></div><div class="hint">点击卡片返回 · 点 🔊 朗读</div></div>
+          <div class="path"><div class="pl">所属路径</div><div class="pv" id="backPath"></div></div>
+        </div>
+        <button class="speaker" id="speakBtn" aria-label="朗读">🔊</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="watermark hide" id="watermark"><div>微信/电话：13513443496</div><div>做出口找小詹 · 让外贸更简单</div></div>
+
+  <div class="progress">
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    <div class="ptext"><span id="pcur">0 / 0</span><span id="pinfo"></span></div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn small" id="prevBtn">◀</button>
+    <button class="ctrl-btn primary" id="nextBtn">下一张 ▶</button>
+    <button class="ctrl-btn small" id="langBtn" title="中英文图片转换">中⇄EN</button>
+  </div>
+
+  <footer>数据：冀教版小学英语（三年级起点）3-6 年级单词表· 点 🔊 逐词跟读 · 点击卡片翻面 · 右下角按钮中英文图片转换</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+window.CATALOG=[{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"hi","l3zh":"嗨；你好"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"I","l3zh":"我"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"am","l3zh":"是（用于I后面）"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"hello","l3zh":"喂；你好"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"name","l3zh":"名字"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"fine","l3zh":"健康的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"thanks","l3zh":"感谢"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"goodbye","l3zh":"再见"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"bye","l3zh":"再见"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"morning","l3zh":"早上"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"boy","l3zh":"男孩"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"girl","l3zh":"女孩"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"nice","l3zh":"令人愉快的；吸引人的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"meet","l3zh":"遇见"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"school","l3zh":"学校"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"playground","l3zh":"操场"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"library","l3zh":"图书馆"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"classroom","l3zh":"教室"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"tidy","l3zh":"整洁的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"letter","l3zh":"字母"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"yes","l3zh":"是的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"is","l3zh":"是（用于he/she/it单数）"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"are","l3zh":"是（用于we/you/they复数）"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"colour","l3zh":"颜色"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"red","l3zh":"红色；红色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"yellow","l3zh":"黄色；黄色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"blue","l3zh":"蓝色；蓝色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"orange","l3zh":"橙色；橙色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"green","l3zh":"绿色；绿色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"friend","l3zh":"朋友"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"her","l3zh":"她的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"his","l3zh":"他的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"one","l3zh":"一"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"pencil box","l3zh":"铅笔盒"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"two","l3zh":"二"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"pen","l3zh":"钢笔"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"three","l3zh":"三"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"ruler","l3zh":"尺子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"four","l3zh":"四"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"pencil","l3zh":"铅笔"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"five","l3zh":"五"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"book","l3zh":"书"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"black","l3zh":"黑色；黑色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"in","l3zh":"在……里面"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"under","l3zh":"在……下面"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"on","l3zh":"在……上面"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"chair","l3zh":"椅子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"she","l3zh":"她"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"he","l3zh":"他"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"we","l3zh":"我们"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"six","l3zh":"六"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"seven","l3zh":"七"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"eight","l3zh":"八"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"nine","l3zh":"九"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"ten","l3zh":"十"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"head","l3zh":"头；头部"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"body","l3zh":"身体"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"leg","l3zh":"腿"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"foot","l3zh":"脚"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"arm","l3zh":"手臂"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"hand","l3zh":"手"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"face","l3zh":"脸"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"eye","l3zh":"眼睛"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"nose","l3zh":"鼻子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"have","l3zh":"有"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"ear","l3zh":"耳朵"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"mouth","l3zh":"嘴；口"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"hair","l3zh":"头发"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"OK","l3zh":"好；行"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"big","l3zh":"大的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"tail","l3zh":"尾巴"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"short","l3zh":"短的；矮的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"long","l3zh":"长的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"small","l3zh":"小的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"family","l3zh":"家庭"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"father","l3zh":"父亲"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"mother","l3zh":"母亲"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"teacher","l3zh":"老师"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"student","l3zh":"学生"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"doctor","l3zh":"医生"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"sister","l3zh":"姐姐；妹妹"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"brother","l3zh":"哥哥；弟弟"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"happy","l3zh":"快乐的；幸福的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"bus driver","l3zh":"公共汽车司机"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"worker","l3zh":"工人"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级上册","l2zh":"三年级上册","l3en":"love","l3zh":"爱"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"like","l3zh":"喜欢"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"apple","l3zh":"苹果"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"orange","l3zh":"橙子；橘子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"rice","l3zh":"米饭"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"you","l3zh":"你；你们"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"vegetable","l3zh":"蔬菜"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"meat","l3zh":"肉"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"food","l3zh":"食物"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"fruit","l3zh":"水果"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"banana","l3zh":"香蕉"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"grape","l3zh":"葡萄"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"eleven","l3zh":"十一"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"twelve","l3zh":"十二"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"bread","l3zh":"面包"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"my","l3zh":"我的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"favourite","l3zh":"特别喜爱的；特别喜爱的事物"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"chicken","l3zh":"鸡肉"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"fish","l3zh":"鱼；鱼肉"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"breakfast","l3zh":"早餐"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"egg","l3zh":"鸡蛋"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"juice","l3zh":"果汁"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"milk","l3zh":"牛奶"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"lunch","l3zh":"午餐"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"hungry","l3zh":"饥饿的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"noodle","l3zh":"面条"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"water","l3zh":"水"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"eat","l3zh":"吃"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"drink","l3zh":"喝"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"soup","l3zh":"汤"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"dinner","l3zh":"正餐；晚餐"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"good","l3zh":"好的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"morning","l3zh":"早晨；上午"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"get up","l3zh":"起床"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"make my bed","l3zh":"整理床铺"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"wash","l3zh":"洗"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"evening","l3zh":"晚上"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"bed","l3zh":"床"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"go to bed","l3zh":"上床睡觉"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"homework","l3zh":"作业"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"read","l3zh":"读；阅读"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"play","l3zh":"玩；玩耍"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"watch","l3zh":"看"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"afternoon","l3zh":"下午"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"farm","l3zh":"农场"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"farmer","l3zh":"农民"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"pig","l3zh":"猪"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"cow","l3zh":"奶牛"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"sheep","l3zh":"绵羊"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"cat","l3zh":"猫"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"dog","l3zh":"狗"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"chicken","l3zh":"鸡；鸡肉"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"duck","l3zh":"鸭子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"bird","l3zh":"鸟"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"horse","l3zh":"马"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"rabbit","l3zh":"兔子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"animal","l3zh":"动物"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"yes","l3zh":"是的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"no","l3zh":"不；不是"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"can","l3zh":"能；会"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"swim","l3zh":"游泳"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"run","l3zh":"跑"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"fly","l3zh":"飞"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"jump","l3zh":"跳"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"zoo","l3zh":"动物园"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"panda","l3zh":"熊猫"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"elephant","l3zh":"大象"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"tiger","l3zh":"老虎"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"bear","l3zh":"熊"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"monkey","l3zh":"猴子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"it","l3zh":"它"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"white","l3zh":"白色；白色的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"big","l3zh":"大的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"small","l3zh":"小的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"fat","l3zh":"胖的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"thin","l3zh":"瘦的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"cute","l3zh":"可爱的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"its","l3zh":"它的"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"river","l3zh":"河"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"tree","l3zh":"树"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"grass","l3zh":"草"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"forest","l3zh":"森林"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"day","l3zh":"天；日子"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"week","l3zh":"星期；周"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Sunday","l3zh":"星期日"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Monday","l3zh":"星期一"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Tuesday","l3zh":"星期二"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Wednesday","l3zh":"星期三"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Thursday","l3zh":"星期四"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Friday","l3zh":"星期五"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"Saturday","l3zh":"星期六"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"today","l3zh":"今天"},{"l1en":"三年级","l1zh":"三年级","l2en":"三年级下册","l2zh":"三年级下册","l3en":"tomorrow","l3zh":"明天"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"shirt","l3zh":"（男式）衬衫"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"skirt","l3zh":"裙子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"trousers","l3zh":"裤子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"sweater","l3zh":"毛衣；线衣"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"this","l3zh":"这；这个"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"these","l3zh":"这些"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"is","l3zh":"是"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"are","l3zh":"是"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"new","l3zh":"新的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"old","l3zh":"旧的；年老的；……岁的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"it","l3zh":"它"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"they","l3zh":"他们；她们；它们"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"coat","l3zh":"大衣；外套"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"cap","l3zh":"（有帽舌的）帽子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"Miss","l3zh":"小姐；女士"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"dress","l3zh":"连衣裙"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"shoe","l3zh":"鞋"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"sock","l3zh":"短袜"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"shorts","l3zh":"短裤"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"not","l3zh":"不；没有"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"day","l3zh":"天；日子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"today","l3zh":"今天"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"week","l3zh":"星期"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"home","l3zh":"家"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"bedroom","l3zh":"卧室"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"bathroom","l3zh":"浴室；卫生间"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"living room","l3zh":"客厅"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"kitchen","l3zh":"厨房"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"study","l3zh":"书房"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"where","l3zh":"在哪里"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"in","l3zh":"在……里面"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"on","l3zh":"在……上面"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"under","l3zh":"在……下面"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"beside","l3zh":"在……旁边"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"between","l3zh":"在……两者之间"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"toy","l3zh":"玩具"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"box","l3zh":"盒子；箱子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"desk","l3zh":"书桌"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"chair","l3zh":"椅子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"phone","l3zh":"电话"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"table","l3zh":"桌子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"breakfast","l3zh":"早餐"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"lunch","l3zh":"午餐"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"dinner","l3zh":"晚餐"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"bread","l3zh":"面包"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"egg","l3zh":"鸡蛋"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"milk","l3zh":"牛奶"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"juice","l3zh":"果汁"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"rice","l3zh":"米饭"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"noodles","l3zh":"面条"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"chicken","l3zh":"鸡肉"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"fish","l3zh":"鱼；鱼肉"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"vegetable","l3zh":"蔬菜"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"fruit","l3zh":"水果"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"apple","l3zh":"苹果"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"banana","l3zh":"香蕉"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"orange","l3zh":"橙子；橘子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"grape","l3zh":"葡萄"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"like","l3zh":"喜欢"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"favourite","l3zh":"特别喜爱的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"zoo","l3zh":"动物园"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"tiger","l3zh":"老虎"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"panda","l3zh":"熊猫"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"elephant","l3zh":"大象"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"monkey","l3zh":"猴子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"bear","l3zh":"熊"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"bird","l3zh":"鸟"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"snake","l3zh":"蛇"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"wolf","l3zh":"狼"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"lion","l3zh":"狮子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"can","l3zh":"能；会"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"run","l3zh":"跑"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"jump","l3zh":"跳"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"fly","l3zh":"飞"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"swim","l3zh":"游泳"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"big","l3zh":"大的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"small","l3zh":"小的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"fat","l3zh":"胖的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"thin","l3zh":"瘦的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"cute","l3zh":"可爱的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"family","l3zh":"家庭"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"father","l3zh":"父亲；爸爸"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"mother","l3zh":"母亲；妈妈"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"brother","l3zh":"哥哥；弟弟"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"sister","l3zh":"姐姐；妹妹"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"grandfather","l3zh":"（外）祖父"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"grandmother","l3zh":"（外）祖母"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"uncle","l3zh":"伯父；叔父；舅父；姑父；姨父"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"aunt","l3zh":"伯母；婶母；舅母；姑母；姨母"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"cousin","l3zh":"堂/表兄弟姐妹"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"baby","l3zh":"婴儿"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"who","l3zh":"谁"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"photo","l3zh":"照片"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"birthday","l3zh":"生日"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"teacher","l3zh":"老师"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"student","l3zh":"学生"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"doctor","l3zh":"医生"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"nurse","l3zh":"护士"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"worker","l3zh":"工人"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"farmer","l3zh":"农民"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"driver","l3zh":"司机"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"policeman","l3zh":"警察"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"firefighter","l3zh":"消防员"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"help","l3zh":"帮助"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"call","l3zh":"打电话"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"here","l3zh":"在这里"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"look for","l3zh":"寻找"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级上册","l2zh":"四年级上册","l3en":"because","l3zh":"因为"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"sun","l3zh":"太阳"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"hot","l3zh":"热的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"rain","l3zh":"雨；下雨"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"strong","l3zh":"强劲的；强壮的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"snow","l3zh":"雪；下雪"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"cold","l3zh":"冷的；寒冷的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"feel","l3zh":"感觉；觉得"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"sad","l3zh":"伤心的；难过的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"happy","l3zh":"高兴的；快乐的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"close","l3zh":"关闭"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"open","l3zh":"打开"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"cool","l3zh":"凉爽的；酷的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"warm","l3zh":"温暖的；暖和的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"begin","l3zh":"开始"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"rainy","l3zh":"多雨的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"weather","l3zh":"天气"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"windy","l3zh":"多风的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"cloudy","l3zh":"多云的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"snowy","l3zh":"多雪的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"sunny","l3zh":"晴朗的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"wear","l3zh":"穿；戴"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"cap","l3zh":"（有帽檐的）便帽"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"coat","l3zh":"大衣；外套"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"shorts","l3zh":"短裤"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"T-shirt","l3zh":"T恤衫"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"trousers","l3zh":"裤子"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"shoe","l3zh":"鞋"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"dress","l3zh":"连衣裙"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"sweater","l3zh":"毛衣；线衣"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"umbrella","l3zh":"雨伞"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"season","l3zh":"季节"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"year","l3zh":"年"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"winter","l3zh":"冬天"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"spring","l3zh":"春天"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"summer","l3zh":"夏天"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"autumn","l3zh":"秋天"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"month","l3zh":"月份"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"January","l3zh":"一月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"February","l3zh":"二月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"March","l3zh":"三月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"April","l3zh":"四月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"May","l3zh":"五月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"June","l3zh":"六月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"July","l3zh":"七月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"August","l3zh":"八月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"September","l3zh":"九月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"October","l3zh":"十月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"November","l3zh":"十一月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"December","l3zh":"十二月"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"first","l3zh":"第一"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"second","l3zh":"第二"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"third","l3zh":"第三"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"fourth","l3zh":"第四"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"fifth","l3zh":"第五"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"sixth","l3zh":"第六"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"seventh","l3zh":"第七"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"eighth","l3zh":"第八"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"ninth","l3zh":"第九"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"tenth","l3zh":"第十"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"eleventh","l3zh":"第十一"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"twelfth","l3zh":"第十二"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"birthday","l3zh":"生日"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"song","l3zh":"歌曲"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"party","l3zh":"聚会"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"New Year's Day","l3zh":"元旦"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"Children's Day","l3zh":"儿童节"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"mooncake","l3zh":"月饼"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"will","l3zh":"将要；会"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"park","l3zh":"公园"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"supermarket","l3zh":"超市"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"cinema","l3zh":"电影院"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"film","l3zh":"电影"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"between","l3zh":"在……中间"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"front","l3zh":"前面"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"in front of","l3zh":"在……前面"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"next to","l3zh":"紧邻；在……旁边"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"street","l3zh":"街道"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"right","l3zh":"右边；右边的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"turn right","l3zh":"向右转"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"left","l3zh":"左边；左边的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"turn left","l3zh":"向左转"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"behind","l3zh":"在……后面"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"bike","l3zh":"自行车"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"bus","l3zh":"公共汽车"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"car","l3zh":"小汽车"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"boat","l3zh":"小船"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"by","l3zh":"乘（交通工具）"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"on foot","l3zh":"步行"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"live","l3zh":"居住；生活"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"too","l3zh":"也；太"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"much","l3zh":"许多"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"lovely","l3zh":"美丽的；可爱的"},{"l1en":"四年级","l1zh":"四年级","l2en":"四年级下册","l2zh":"四年级下册","l3en":"but","l3zh":"但是；然而"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"want","l3zh":"想要"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"some","l3zh":"一些（用于肯定句）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"beautiful","l3zh":"美丽的；美好的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"any","l3zh":"一些（用于否定句、疑问句）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"fan","l3zh":"爱好者；风扇"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"watch","l3zh":"观看"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"every","l3zh":"每一个"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"also","l3zh":"也"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"piano","l3zh":"钢琴"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"singing","l3zh":"唱歌"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"join","l3zh":"加入"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"club","l3zh":"俱乐部"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"basketball","l3zh":"篮球"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"football","l3zh":"足球"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"ping-pong","l3zh":"乒乓球"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"volleyball","l3zh":"排球"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"practice","l3zh":"练习"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"team","l3zh":"团队；队伍"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"rule","l3zh":"规则"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"skill","l3zh":"技能"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"interesting","l3zh":"有趣的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"useful","l3zh":"有用的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"storybook","l3zh":"故事书"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"writer","l3zh":"作家"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"erhu","l3zh":"二胡"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"game","l3zh":"游戏；运动"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"sport","l3zh":"运动"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"easy","l3zh":"容易的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"difficult","l3zh":"困难的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"boat","l3zh":"船"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"begin","l3zh":"开始"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"hard","l3zh":"努力地；艰难地"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"their","l3zh":"他们的；她们的；它们的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"sit","l3zh":"坐"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"slowly","l3zh":"缓慢地"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"safety","l3zh":"安全"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"tie","l3zh":"系"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"hurt","l3zh":"受伤；疼痛"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"keep","l3zh":"保持"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"safe","l3zh":"安全的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"warm up","l3zh":"热身"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"balance","l3zh":"平衡"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"careful","l3zh":"小心的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"roller skate","l3zh":"滑旱冰"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"gear","l3zh":"装备"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"gym","l3zh":"体育馆"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"playground","l3zh":"操场"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"race","l3zh":"赛跑"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"win","l3zh":"获胜"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"give up","l3zh":"放弃"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"try one's best","l3zh":"尽最大努力"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"listen","l3zh":"听；倾听"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"listen to","l3zh":"听……"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"exercise","l3zh":"锻炼"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"hour","l3zh":"小时"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"always","l3zh":"总是"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"never","l3zh":"从不"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"sometimes","l3zh":"有时"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"often","l3zh":"常常"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"healthy","l3zh":"健康的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"sleep","l3zh":"睡觉"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"wall","l3zh":"墙"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"TV","l3zh":"电视"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"o'clock","l3zh":"……点钟（整点）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"bed","l3zh":"床"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"plan","l3zh":"计划"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"change","l3zh":"改变"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"early","l3zh":"早的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"late","l3zh":"晚的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"on time","l3zh":"按时"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"stay up late","l3zh":"熬夜"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"get up","l3zh":"起床"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"do homework","l3zh":"做家庭作业"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"wash dishes","l3zh":"洗碗"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"water flowers","l3zh":"浇花"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"country","l3zh":"国家"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"map","l3zh":"地图"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"world","l3zh":"世界"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"capital","l3zh":"首都"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"language","l3zh":"语言"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"speak","l3zh":"说；讲"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"flag","l3zh":"旗帜"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"star","l3zh":"星星"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"famous","l3zh":"著名的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"travel","l3zh":"旅行"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"north","l3zh":"北方"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"south","l3zh":"南方"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"east","l3zh":"东方"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"west","l3zh":"西方"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"river","l3zh":"河；江"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"place","l3zh":"地方；场所"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"China","l3zh":"中国"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"the US","l3zh":"美国"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"the UK","l3zh":"英国"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"Canada","l3zh":"加拿大"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"Australia","l3zh":"澳大利亚"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"London","l3zh":"伦敦"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"Washington D.C.","l3zh":"华盛顿"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"city","l3zh":"城市"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"hometown","l3zh":"家乡"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"climate","l3zh":"气候"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"photo","l3zh":"照片"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"show","l3zh":"展示"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"lake","l3zh":"湖"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"hill","l3zh":"小山"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"building","l3zh":"建筑物"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"village","l3zh":"村庄"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"ago","l3zh":"以前"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"wide","l3zh":"宽阔的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"wonderful","l3zh":"精彩的；令人高兴的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"holiday","l3zh":"假日；节日"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"did","l3zh":"做；干（do的过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"went","l3zh":"去；走（go的过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"the Great Wall","l3zh":"长城"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"get","l3zh":"到达"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"plane","l3zh":"飞机"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"about","l3zh":"大约；关于"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"hundred","l3zh":"百"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"clock","l3zh":"时钟"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"had","l3zh":"有；吃（have的过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级上册","l2zh":"五年级上册","l3en":"visit","l3zh":"参观；访问"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"run","l3zh":"跑"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"sorry","l3zh":"对不起；不好意思"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"jump","l3zh":"跳；跳跃"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"sing","l3zh":"唱；演唱"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"dance","l3zh":"跳舞"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"sit","l3zh":"坐"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"down","l3zh":"向下；朝下；沿着"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"stand","l3zh":"站立；直立"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"up","l3zh":"向上；在上面"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"see","l3zh":"看见；明白；会见（saw过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"look","l3zh":"看；瞧"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"look out of","l3zh":"从……向外看"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"look at","l3zh":"看（某人或某物）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"boy","l3zh":"男孩"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"girl","l3zh":"女孩"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"now","l3zh":"现在"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"draw","l3zh":"画"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"picture","l3zh":"图画；照片"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"woman","l3zh":"女人"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"baby","l3zh":"婴儿"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"cry","l3zh":"哭；哭泣；喊叫"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"talk","l3zh":"交谈；讨论"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"man","l3zh":"男人"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"sleep","l3zh":"睡觉；入睡"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"who","l3zh":"谁"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"hungry","l3zh":"饥饿的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"water","l3zh":"水"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"tea","l3zh":"茶"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"candy","l3zh":"糖果"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"people","l3zh":"人们"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"many","l3zh":"许多的；许多"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"child","l3zh":"孩子（复数children）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"women","l3zh":"女人（woman复数）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"men","l3zh":"男人（man复数）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"say","l3zh":"说"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"help","l3zh":"救命；帮助"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"worry","l3zh":"担心；担忧"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"sad","l3zh":"悲伤的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"take","l3zh":"乘坐；买下；拍照"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"take a picture","l3zh":"拍照"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"be","l3zh":"是；存在"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"feel","l3zh":"觉得；感到"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"tired","l3zh":"疲劳的；累的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"stop","l3zh":"停下；停止；车站"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"wait","l3zh":"等待"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"afraid","l3zh":"害怕；畏惧"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"for","l3zh":"为；给"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"busy","l3zh":"忙碌的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"much","l3zh":"多少；很；非常"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"write","l3zh":"写"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"mum","l3zh":"妈妈"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"dad","l3zh":"爸爸"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"dear","l3zh":"亲爱的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"fine","l3zh":"健康的；晴朗的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"left","l3zh":"左边的；左边"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"right","l3zh":"右边的；右边"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"turn","l3zh":"转向；转弯"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"wrong","l3zh":"错误的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"email","l3zh":"电子邮件"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"idea","l3zh":"想法；主意"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"computer","l3zh":"电脑"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"use","l3zh":"使用；利用"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"kind","l3zh":"友好的；体贴的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"us","l3zh":"我们（宾格）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"did","l3zh":"做；干（do过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"story","l3zh":"故事"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"yesterday","l3zh":"昨天"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"night","l3zh":"夜晚；晚上"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"had","l3zh":"有；吃（have过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"went","l3zh":"去；走（go过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"saw","l3zh":"看见（see过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"ate","l3zh":"吃（eat过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"photo","l3zh":"照片"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"were","l3zh":"是（are过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"was","l3zh":"是（am/is过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"happy","l3zh":"快乐的；高兴的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"bought","l3zh":"买（buy过去式）"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"back","l3zh":"回原处；向后"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"read","l3zh":"读；阅读"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"read a book","l3zh":"读书"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"draw","l3zh":"画"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"draw a picture","l3zh":"画画"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"write","l3zh":"写"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"write a letter","l3zh":"写信"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"play","l3zh":"玩；玩耍"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"play football","l3zh":"踢足球"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"play ping-pong","l3zh":"打乒乓球"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"watch","l3zh":"看；观看"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"watch TV","l3zh":"看电视"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"sleep","l3zh":"睡觉"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"talk","l3zh":"交谈"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"talk to","l3zh":"和……交谈"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"cry","l3zh":"哭"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"laugh","l3zh":"笑"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"look","l3zh":"看"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"look at","l3zh":"看"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"look out of","l3zh":"朝……外面看"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"arrive","l3zh":"到达；抵达"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"address","l3zh":"地址"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"answer","l3zh":"回答"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"ask","l3zh":"问；询问"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"card","l3zh":"卡片"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"careful","l3zh":"小心；注意"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"cheese","l3zh":"奶酪"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"difficult","l3zh":"困难的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"drive","l3zh":"驾驶；开车送"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"dumpling","l3zh":"饺子"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"easy","l3zh":"容易的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"excited","l3zh":"激动的；兴奋的"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"excuse","l3zh":"劳驾；请原谅"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"find","l3zh":"发现；找到"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"first","l3zh":"第一；首先"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"food","l3zh":"食物"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"gift","l3zh":"礼物"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"hotel","l3zh":"旅馆；饭店"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"learn","l3zh":"学习"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"leave","l3zh":"离开"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"letter","l3zh":"信"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"map","l3zh":"地图"},{"l1en":"五年级","l1zh":"五年级","l2en":"五年级下册","l2zh":"五年级下册","l3en":"park","l3zh":"公园"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"home","l3zh":"家；住所"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"house","l3zh":"房子；住宅"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"clock","l3zh":"时钟"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"study","l3zh":"书房；学习"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"kitchen","l3zh":"厨房"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"toilet","l3zh":"卫生间；坐便器"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"floor","l3zh":"地板；楼层"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"there","l3zh":"在那里"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"breakfast","l3zh":"早餐"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"table","l3zh":"桌子"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"put","l3zh":"放；安置"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"half","l3zh":"一半；半数"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"dinner","l3zh":"正餐；晚餐"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"dirty","l3zh":"脏的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"lunch","l3zh":"午餐"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"me","l3zh":"我（I的宾格）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"him","l3zh":"他（he的宾格）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"card","l3zh":"纸牌；卡片"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"them","l3zh":"他（她、它）们（they的宾格）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"Mr.","l3zh":"先生"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"Mrs.","l3zh":"夫人；太太"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"Ms.","l3zh":"女士"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"umbrella","l3zh":"雨伞"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"driver","l3zh":"司机"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"well","l3zh":"健康的；噢"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"class","l3zh":"班级；课"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"ill","l3zh":"有病；不舒服"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"lesson","l3zh":"课"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"its","l3zh":"它的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"word","l3zh":"单词；话语"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"always","l3zh":"总是；永远"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"sometimes","l3zh":"有时；间或"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"temperature","l3zh":"温度"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"may","l3zh":"可能"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级上册","l2zh":"六年级上册","l3en":"heat","l3zh":"热"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"sport","l3zh":"运动"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"football","l3zh":"足球"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"any","l3zh":"任一；一些"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"some","l3zh":"一些"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"wear","l3zh":"穿；戴"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"or","l3zh":"或者；还是"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"basketball","l3zh":"篮球"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"try","l3zh":"试；尝试"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"heavy","l3zh":"重的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"difficult","l3zh":"困难的；费力的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"easy","l3zh":"容易的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"hand","l3zh":"手"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"game","l3zh":"比赛；游戏"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"ask","l3zh":"问"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"very","l3zh":"很；非常"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"answer","l3zh":"回答"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"policeman","l3zh":"警察"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"healthy","l3zh":"健康的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"strong","l3zh":"强壮的；有力的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"before","l3zh":"在……之前"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"after","l3zh":"在……之后"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"bad","l3zh":"有害的；糟糕的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"next","l3zh":"紧接着；下一个的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"often","l3zh":"常常；经常"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"exercise","l3zh":"锻炼；练习"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"minute","l3zh":"分（钟）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"hour","l3zh":"小时"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"high","l3zh":"高；高的；在高处"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"fan","l3zh":"风扇；扇子"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"close","l3zh":"关；关闭；合上"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"angry","l3zh":"发怒的；生气的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"lake","l3zh":"湖"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"swim","l3zh":"游泳（过去式swam）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"ship","l3zh":"船；舰"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"visit","l3zh":"拜访；参观"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"clever","l3zh":"聪明的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"find","l3zh":"找到；发现（过去式found）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"get","l3zh":"得到；收到（过去式got）"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"party","l3zh":"聚会；晚会"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"tell","l3zh":"告诉；讲述"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"begin","l3zh":"开始"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"late","l3zh":"晚的；迟到的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"early","l3zh":"早的；提早的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"cake","l3zh":"蛋糕"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"every","l3zh":"每一个；每个"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"all","l3zh":"全部；所有的"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"good-bye","l3zh":"再见"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"hear","l3zh":"听见"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"surprise","l3zh":"惊喜"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"invite","l3zh":"邀请"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"bring","l3zh":"带来；拿来"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"bring gifts","l3zh":"带礼物"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"tell","l3zh":"告诉"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"story","l3zh":"故事"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"photo","l3zh":"照片"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"card","l3zh":"卡片"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"song","l3zh":"歌曲"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"dance","l3zh":"跳舞"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"clap","l3zh":"拍手"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"laugh","l3zh":"笑"},{"l1en":"六年级","l1zh":"六年级","l2en":"六年级下册","l2zh":"六年级下册","l3en":"happy","l3zh":"高兴的"}];
+</script>
+<script>
+(function(){
+"use strict";
+var ALL = window.CATALOG || [];
+var state = {
+  mode: "en2zh",      // en2zh | zh2en
+  order: "seq",       // seq | rand
+  cat: "all",         // 当前筛选的一级类目（zh 名）
+  idx: 0,
+  deck: [],           // 当前筛选后的记录索引（在 ALL 中的下标）
+  flipped: false,
+  autoOn: false,
+  autoTimer: null,
+  speaking: false
+};
+
+/* ---------- DOM ---------- */
+var $ = function(id){ return document.getElementById(id); };
+var elCard=$("card"), elScene=$("scene"), elFrontText=$("frontText"), elBackText=$("backText");
+var elFrontPath=$("frontPath"), elBackPath=$("backPath"), elTagsFront=$("tagsFront"), elTagsBack=$("tagsBack");
+var elCornerFront=$("cornerFront"), elFrontHint=$("frontHint"), elFrontPathLabel=$("frontPathLabel");
+var elFrontImgWrap=$("frontImgWrap"), elFrontImg=$("frontImg"), elWatermark=$("watermark");
+var elPfill=$("pfill"), elPcur=$("pcur"), elPinfo=$("pinfo");
+var elChips=$("chips"), elModeBtn=$("modeBtn"), elOrderBtn=$("orderBtn"), elAutoBtn=$("autoBtn");
+var elSpeak=$("speakBtn"), elPrev=$("prevBtn"), elNext=$("nextBtn"), elLang=$("langBtn");
+var elToast=$("toast");
+
+/* ---------- 语音 ---------- */
+var voices=[];
+var SPEAK_GAP = 1000;   // 单词间隔 1 秒
+var speakGen = 0;       // 朗读代次，用于中断旧朗读链
+function loadVoices(){
+  voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+}
+if ("speechSynthesis" in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+function pickVoice(lang){
+  var exact = lang.toLowerCase();
+  var preferred = {
+    "en-gb": ["daniel", "kate", "arthur", "serena", "oliver", "moira", "libby", "sonia", "thomas", "google uk english"],
+    "en-us": ["google us english", "samantha", "alex", "ava", "allison"],
+    "zh-cn": ["ting-ting", "xiaoxiao", "huihui", "meijia", "yaoyao", "google 普通话"]
+  };
+  var list = preferred[exact] || [];
+  for (var i=0;i<list.length;i++){
+    for (var j=0;j<voices.length;j++){
+      if (voices[j].name && voices[j].name.toLowerCase().indexOf(list[i])!==-1) return voices[j];
+    }
+  }
+  for (var j=0;j<voices.length;j++){
+    if (voices[j].lang && voices[j].lang.toLowerCase().indexOf(exact)===0) return voices[j];
+  }
+  var p = lang.split("-")[0];
+  for (var j=0;j<voices.length;j++){
+    if (voices[j].lang && voices[j].lang.toLowerCase().indexOf(p)===0) return voices[j];
+  }
+  return null;
+}
+function stopSpeaking(){
+  speakGen++;
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  if (audioBusy){
+    audioBusy = false;
+    audioEl.pause();
+    audioEl.onended = audioEl.onerror = audioEl.oncanplay = null;
+    audioEl.removeAttribute("src");
+  }
+  elSpeak.classList.remove("speaking");
+}
+/* 整句朗读（中文等） */
+function speakText(text, lang, onDone){
+  if (!("speechSynthesis" in window)){ toast("此浏览器不支持朗读，请点右上角···在浏览器中打开"); if (onDone) onDone(); return; }
+  var gen = ++speakGen;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  u.rate = 0.92;
+  u.pitch = 1;
+  var v = pickVoice(lang);
+  if (v) u.voice = v;
+  u.onstart = function(){ elSpeak.classList.add("speaking"); };
+  u.onend = u.onerror = function(){
+    if (gen !== speakGen) return;
+    elSpeak.classList.remove("speaking");
+    if (onDone) onDone();
+  };
+  setTimeout(function(){
+    if (gen !== speakGen) return;
+    if ("speechSynthesis" in window) speechSynthesis.resume();
+    speechSynthesis.speak(u);
+  }, 120);
+}
+/* 逐词朗读：跳过 &，词间间隔 SPEAK_GAP 毫秒 */
+/* 朗读分组：按 & 拆分，组内连读（词组），组间间隔 SPEAK_GAP */
+function speakByGroups(groups, lang, onDone){
+  if (!groups.length){ if (onDone) onDone(); return; }
+  if (!("speechSynthesis" in window)){ toast("此浏览器不支持朗读，请点右上角···在浏览器中打开"); if (onDone) onDone(); return; }
+  var gen = ++speakGen;
+  speechSynthesis.cancel();
+  var i = 0;
+  function begin(){
+    if (gen !== speakGen) return;
+    elSpeak.classList.add("speaking");
+    if ("speechSynthesis" in window) speechSynthesis.resume();
+    next();
+  }
+  function next(){
+    if (gen !== speakGen) return;
+    if (i >= groups.length){
+      elSpeak.classList.remove("speaking");
+      if (onDone) onDone();
+      return;
+    }
+    var g = groups[i++];
+    var u = new SpeechSynthesisUtterance(g);
+    u.lang = lang;
+    u.rate = 0.9;
+    u.pitch = 1;
+    var v = pickVoice(lang);
+    if (v){
+      u.voice = v;
+      if (lang.indexOf("en")===0 && !window.__voiceNotified){
+        window.__voiceNotified = true;
+        toast("英式发音："+v.name);
+      }
+    }
+    u.onend = u.onerror = function(){
+      if (gen !== speakGen) return;
+      if (i < groups.length){
+        setTimeout(next, SPEAK_GAP);
+      } else {
+        next();
+      }
+    };
+    speechSynthesis.speak(u);
+  }
+  setTimeout(begin, 120);
+}
+function splitGroups(en){
+  return String(en).split("&").map(function(g){
+    return g.replace(/\s+/g, " ").trim();
+  }).filter(function(g){ return g.length > 0; });
+}
+var audioEl = new Audio();
+var audioBusy = false;
+function pad5(n){ return ("00000"+n).slice(-5); }
+function playAudio(url, onOk, onFail){
+  audioBusy = true;
+  elSpeak.classList.add("speaking");
+  var finished = false;
+  function done(ok){
+    if (finished) return;
+    finished = true;
+    audioBusy = false;
+    elSpeak.classList.remove("speaking");
+    audioEl.onended = audioEl.onerror = audioEl.oncanplay = null;
+    audioEl.removeAttribute("src");
+    if (ok && onOk) onOk();
+    else if (!ok && onFail) onFail();
+  }
+  audioEl.onended = function(){ done(true); };
+  audioEl.onerror = function(){ done(false); };
+  audioEl.oncanplay = function(){
+    audioEl.play().catch(function(){ done(false); });
+  };
+  audioEl.src = url;
+  setTimeout(function(){
+    if (!finished && audioEl.readyState < 3){ done(false); }
+  }, 4000);
+}
+function speakCurrent(onDone){
+  var r = ALL[state.deck[state.idx]];
+  if (!r) return;
+  var idx = state.deck[state.idx];
+  var isEn;
+  if (state.flipped){
+    isEn = state.mode !== "en2zh";
+  } else {
+    isEn = state.mode === "en2zh";
+  }
+  if (!isEn){
+    if (state.flipped){ speakText(r.l1zh+"，"+r.l2zh+"，"+r.l3zh, "zh-CN", onDone); }
+    else { speakText(r.l3zh, "zh-CN", onDone); }
+    return;
+  }
+  /* 英文：优先播放预生成音频（微信内也可发声），失败回退 TTS */
+  stopSpeaking();
+  var url = "audio/" + pad5(idx) + ".m4a";
+  playAudio(url, function(){ if (onDone) onDone(); }, function(){
+    if (state.flipped){ speakByGroups(splitGroups(r.l1en+" "+r.l2en+" "+r.l3en), "en-GB", onDone); }
+    else { speakByGroups(splitGroups(r.l3en), "en-GB", onDone); }
+  });
+}
+
+/* ---------- 筛选 chips ---------- */
+function buildChips(){
+  var cats = [];
+  var seen = {};
+  for (var i=0;i<ALL.length;i++){
+    var k = ALL[i].l2zh;
+    if (!seen[k]){ seen[k]=true; cats.push({zh:k, en:ALL[i].l2en, n:1}); }
+    else { for (var j=0;j<cats.length;j++) if (cats[j].zh===k) cats[j].n++; }
+  }
+  var html = '<div class="chip on" data-cat="all">全部 <b>'+ALL.length+'</b></div>';
+  for (var c=0;c<cats.length;c++){
+    html += '<div class="chip" data-cat="'+cats[c].zh+'">'+cats[c].zh+' <b>'+cats[c].n+'</b></div>';
+  }
+  elChips.innerHTML = html;
+  elChips.addEventListener("click", function(e){
+    var chip = e.target.closest(".chip");
+    if (!chip) return;
+    var cat = chip.getAttribute("data-cat");
+    if (cat === state.cat) return;
+    state.cat = cat;
+    var all = elChips.querySelectorAll(".chip");
+    for (var i=0;i<all.length;i++) all[i].classList.remove("on");
+    chip.classList.add("on");
+    buildDeck();
+  });
+}
+
+/* ---------- deck ---------- */
+function buildDeck(){
+  stopSpeaking();
+  state.deck = [];
+  for (var i=0;i<ALL.length;i++){
+    if (state.cat==="all" || ALL[i].l2zh===state.cat) state.deck.push(i);
+  }
+  if (state.order==="rand") shuffle(state.deck);
+  state.idx = 0;
+  state.flipped = false;
+  elCard.classList.remove("flip");
+  render();
+}
+function shuffle(a){
+  for (var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+}
+function nextIdx(){
+  if (state.order==="rand") return Math.floor(Math.random()*state.deck.length);
+  return (state.idx+1)%state.deck.length;
+}
+
+/* ---------- render ---------- */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function render(){
+  if (!state.deck.length){ toast("当前分类无数据"); return; }
+  var r = ALL[state.deck[state.idx]];
+  var en2zh = state.mode==="en2zh";
+
+  elFrontText.textContent = en2zh ? r.l3en : r.l3zh;
+  elBackText.textContent  = en2zh ? r.l3zh : r.l3en;
+  elFrontPath.innerHTML = en2zh
+    ? esc(r.l1en)+'<span class="arrow">›</span>'+esc(r.l2en)
+    : esc(r.l1zh)+'<span class="arrow">›</span>'+esc(r.l2zh);
+  elBackPath.innerHTML = en2zh
+    ? esc(r.l1zh)+'<span class="arrow">›</span>'+esc(r.l2zh)+'<span class="arrow">›</span>'+esc(r.l3zh)
+    : esc(r.l1en)+'<span class="arrow">›</span>'+esc(r.l2en)+'<span class="arrow">›</span>'+esc(r.l3en);
+
+  elTagsFront.innerHTML = en2zh
+    ? '<span class="tag">'+esc(r.l1en)+'</span><span class="tag">'+esc(r.l2en)+'</span>'
+    : '<span class="tag">'+esc(r.l1zh)+'</span><span class="tag">'+esc(r.l2zh)+'</span>';
+  elTagsBack.innerHTML  = '<span class="tag acc">'+esc(r.l3en)+'</span>';
+  elCornerFront.textContent = en2zh ? "英 → 中" : "中 → 英";
+  updateLangBtn();
+  if (r.img){
+    elFrontImgWrap.classList.remove("hide");
+    elFrontImg.src = r.img;
+  } else {
+    elFrontImgWrap.classList.add("hide");
+    elFrontImg.removeAttribute("src");
+  }
+  if (r.img){
+    elWatermark.classList.remove("hide");
+  } else {
+    elWatermark.classList.add("hide");
+  }
+  elFrontHint.textContent = en2zh ? "Tap to flip · 🔊 word by word" : "点击卡片查看英文 · 点 🔊 逐词跟读";
+  elFrontPathLabel.textContent = en2zh ? "PATH" : "所属路径";
+
+  var n = state.deck.length;
+  var pct = n ? Math.round((state.idx+1)/n*100) : 0;
+  elPfill.style.width = pct+"%";
+  elPcur.textContent = (state.idx+1)+" / "+n;
+  elPinfo.textContent = state.cat==="all" ? "全部" : state.cat;
+}
+function flipCard(){
+  state.flipped = !state.flipped;
+  elCard.classList.toggle("flip", state.flipped);
+  if (state.autoOn){ scheduleAuto(); }
+}
+
+/* ---------- 自动播放（朗读驱动） ---------- */
+function stopAuto(){
+  state.autoOn = false;
+  elAutoBtn.textContent = "▶";
+  elAutoBtn.classList.remove("on");
+  if (state.autoTimer){ clearTimeout(state.autoTimer); state.autoTimer=null; }
+  stopSpeaking();
+}
+function scheduleAuto(){
+  if (!state.autoOn) return;
+  if (state.autoTimer) clearTimeout(state.autoTimer);
+  if (state.flipped){
+    // 背面阶段：朗读答案，2.6s 后下一张
+    speakCurrent(function(){});
+    state.autoTimer = setTimeout(function(){
+      elCard.classList.remove("flip");
+      state.flipped = false;
+      state.idx = nextIdx();
+      render();
+      scheduleAuto();
+    }, 2600);
+  } else {
+    // 正面阶段：逐词朗读英文（3s 间隔），完成后 1.2s 翻面
+    speakCurrent(function(){
+      if (!state.autoOn) return;
+      state.autoTimer = setTimeout(function(){
+        elCard.classList.add("flip");
+        state.flipped = true;
+        scheduleAuto();
+      }, 1200);
+    });
+  }
+}
+function toggleAuto(){
+  state.autoOn = !state.autoOn;
+  if (state.autoOn){
+    elAutoBtn.textContent = "⏸";
+    elAutoBtn.classList.add("on");
+    if (state.flipped){ elCard.classList.remove("flip"); state.flipped=false; }
+    scheduleAuto();
+    toast("自动播放中：自动翻面并朗读");
+  } else {
+    stopAuto();
+  }
+}
+
+/* ---------- 事件 ---------- */
+elCard.addEventListener("click", function(e){
+  if (e.target === elSpeak || elSpeak.contains(e.target)) return;
+  stopSpeaking();
+  flipCard();
+});
+elSpeak.addEventListener("click", function(e){
+  e.stopPropagation();
+  if (state.autoOn) return;
+  speakCurrent();
+});
+elNext.addEventListener("click", function(){
+  stopSpeaking();
+  state.idx = nextIdx();
+  state.flipped = false;
+  elCard.classList.remove("flip");
+  render();
+  if (state.autoOn) scheduleAuto();
+});
+elPrev.addEventListener("click", function(){
+  stopSpeaking();
+  state.idx = (state.idx-1+state.deck.length)%state.deck.length;
+  state.flipped = false;
+  elCard.classList.remove("flip");
+  render();
+  if (state.autoOn) scheduleAuto();
+});
+elLang.addEventListener("click", function(){
+  stopSpeaking();
+  state.mode = state.mode === "en2zh" ? "zh2en" : "en2zh";
+  elModeBtn.textContent = state.mode === "en2zh" ? "EN → 中" : "中 → EN";
+  if (state.flipped){ elCard.classList.remove("flip"); state.flipped = false; }
+  render();
+});
+function updateLangBtn(){
+  elLang.title = state.mode === "en2zh" ? "切换为中文+图片（当前英文）" : "切换为英文+图片（当前中文）";
+}
+elModeBtn.addEventListener("click", function(){
+  stopSpeaking();
+  state.mode = state.mode==="en2zh" ? "zh2en" : "en2zh";
+  elModeBtn.textContent = state.mode==="en2zh" ? "EN → 中" : "中 → EN";
+  if (state.flipped){ elCard.classList.remove("flip"); state.flipped=false; }
+  render();
+});
+elFrontImg.addEventListener("error", function(){ elFrontImgWrap.classList.add("hide"); });
+elFrontImg.addEventListener("load", function(){ elFrontImgWrap.classList.remove("hide"); });
+elOrderBtn.addEventListener("click", function(){
+  stopSpeaking();
+  state.order = state.order==="seq" ? "rand" : "seq";
+  elOrderBtn.textContent = state.order==="seq" ? "顺序" : "随机";
+  buildDeck();
+});
+elAutoBtn.addEventListener("click", toggleAuto);
+
+var elTtsBanner=$("ttsBanner"), elTtsClose=$("ttsClose");
+function checkTTS(){
+  if (!("speechSynthesis" in window)){
+    elTtsBanner.classList.remove("hide");
+  }
+}
+elTtsClose.addEventListener("click", function(){ elTtsBanner.classList.add("hide"); });
+
+document.addEventListener("visibilitychange", function(){
+  if (document.hidden) stopSpeaking();
+});
+
+/* 键盘支持（桌面） */
+document.addEventListener("keydown", function(e){
+  if (e.key==="ArrowRight" || e.key===" ") elNext.click();
+  else if (e.key==="ArrowLeft") elPrev.click();
+  else if (e.key==="Enter") flipCard();
+});
+
+/* ---------- toast ---------- */
+var toastTimer=null;
+function toast(msg){
+  elToast.textContent = msg;
+  elToast.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ elToast.classList.remove("show"); }, 2200);
+}
+
+/* ---------- 启动 ---------- */
+buildChips();
+buildDeck();
+checkTTS();
+})();
+</script>
+</body>
+</html>
